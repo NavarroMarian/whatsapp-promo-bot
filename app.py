@@ -15,7 +15,7 @@ WHATSAPP_PHONE_ID = os.getenv("WHATSAPP_PHONE_ID")
 SHEET_ID = os.getenv("GOOGLE_SHEET_ID")
 
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = Credentials.from_service_account_file("credentials.json", scopes=SCOPE)
+creds = Credentials.from_service_account_file("bot-whatsapp-promo.json", scopes=SCOPE)
 client = gspread.authorize(creds)
 
 SHEET = client.open_by_key("TU_ID_DE_HOJA").sheet1
