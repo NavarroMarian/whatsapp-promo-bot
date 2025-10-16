@@ -18,7 +18,7 @@ SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 creds = Credentials.from_service_account_file("bot-whatsapp-promo.json", scopes=SCOPE)
 client = gspread.authorize(creds)
 
-SHEET = client.open_by_key("TU_ID_DE_HOJA").sheet1
+SHEET = client.open_by_key(SHEET_ID).sheet1
 
 @app.get("/health")
 def health():
