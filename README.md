@@ -1,4 +1,4 @@
-# wa-promo-webhook
+# whatsapp-promo-bot
 
 Webhook en **Flask** para **WhatsApp Cloud API** que valida el teléfono del cliente en **Google Sheets** y devuelve su **promoción**. Preparado para despliegue en **Render**.
 
