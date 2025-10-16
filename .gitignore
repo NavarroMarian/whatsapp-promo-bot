@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+.python-version
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+ENV/
+
+# Tests / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache/
+
+# Linters / type checkers
+.mypy_cache/
+.pytype/
+.ruff_cache/
+
+# Logs y PIDs
+*.log
+*.pid
+*.seed
+*.out
+
+# IDEs / OS
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Env & secretos
+.env
+.env.*
+!/.env.example
+credentials.json
+
+# Herramientas locales
+.ngrok2/
