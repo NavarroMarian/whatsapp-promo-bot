@@ -59,7 +59,7 @@ def receive_message():
     try:
         logger.info("Webhook received")
         logger.debug(f"Raw payload: {data}")
-        message = data["messages"][0]
+        '''message = data["messages"][0]
         phone = message["from"]  # número del cliente
         logger.info(f"Mensaje de: {phone}")
         
@@ -82,7 +82,7 @@ def receive_message():
             enviar_mensaje(
                 phone,
                 "👋 Hola! Escribí *1* o *promo* para consultar tu promoción disponible.\nEscribí *2* o *asesor* para hablar con un asesor."
-            )
+            )'''
 
     except Exception:
         logger.exception("Error procesando webhook")
