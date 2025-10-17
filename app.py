@@ -62,9 +62,9 @@ def receive_message():
     # parseo robusto
     data = request.get_json(force=True, silent=True) or {}
     app.logger.info("Webhook received")
-    app.logger.debug(f"Headers: {headers}")
-    app.logger.debug(f"Raw body: {raw}")
-    app.logger.debug(f"JSON parsed: {data}")
+    app.logger.info(f"Headers: {headers}")
+    app.logger.info(f"Raw body: {raw}")
+    app.logger.info(f"JSON parsed: {data}")
 
     try:
         change = data.get("entry",[{}])[0].get("changes",[{}])[0]
