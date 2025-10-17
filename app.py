@@ -19,7 +19,7 @@ ADVISOR_PHONE = os.getenv("ADVISOR_PHONE")
 # Logging setup
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL, logging.DEBUG),
+    level=getattr(logging, LOG_LEVEL, logging.INFO),
     format='%(asctime)s %(levelname)s %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -55,44 +55,26 @@ def verify():
 
 @app.route("/webhook", methods=["POST"])
 def receive_message():
-
-    raw = request.data.decode("utf-8", errors="ignore")
-    headers = dict(request.headers)
-
-    # parseo robusto
-    data = request.get_json(force=True, silent=True) or {}
-    app.logger.info("Webhook received")
-    app.logger.info(f"Headers: {headers}")
-    app.logger.info(f"Raw body: {raw}")
-    app.logger.info(f"JSON parsed: {data}")
-
-    try:
-        change = data.get("entry",[{}])[0].get("changes",[{}])[0]
-        value  = change.get("value", {})
-
-        if "messages" in value:
-            msg    = value["messages"][0]
-            sender = msg["from"]
-            text   = (msg.get("text") or {}).get("body","").strip()
-            # ... tu lógica ...
-        elif "statuses" in value:
-            app.logger.info(f"Status update: {value.get('statuses',[{}])[0].get('status')}")
-        else:
-            app.logger.info(f"Evento no soportado: {list(value.keys())}")
-    except Exception:
-        app.logger.exception("Error procesando webhook")
-
-    return "ok", 200
-
-    '''data = request.get_json()
+    data = request.get_json(silent=True) or {}
     try:
         logger.info("Webhook received")
-        logger.debug(f"Raw payload: {data}")
-        message = data["messages"][0]
-        phone = message["from"]  # número del cliente
+        logger.info(f"JSON parsed: {data}")
+
+        value = (
+            (data.get("entry") or [{}])[0]
+            .get("changes", [{}])[0]
+            .get("value", {})
+        )
+        messages = value.get("messages") or []
+        if not messages:
+            logger.warning("Webhook sin mensajes; nada que procesar")
+            return "ok", 200
+
+        message = messages[0]
+        phone = message.get("from") 
         logger.info(f"Mensaje de: {phone}")
-        
-        text = message["text"]["body"].strip().lower()
+
+        text = (message.get("text", {}).get("body") or "").strip().lower()
         logger.info(f"Texto recibido: {text}")
 
         # Si el usuario pide la promo
@@ -116,7 +98,6 @@ def receive_message():
     except Exception:
         logger.exception("Error procesando webhook")
     return "ok", 200
-    '''
 
 
 def buscar_promo(phone):
