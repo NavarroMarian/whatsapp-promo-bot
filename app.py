@@ -55,11 +55,40 @@ def verify():
 
 @app.route("/webhook", methods=["POST"])
 def receive_message():
-    data = request.get_json()
+
+    raw = request.data.decode("utf-8", errors="ignore")
+    headers = dict(request.headers)
+
+    # parseo robusto
+    data = request.get_json(force=True, silent=True) or {}
+    app.logger.info("Webhook received")
+    app.logger.debug(f"Headers: {headers}")
+    app.logger.debug(f"Raw body: {raw}")
+    app.logger.debug(f"JSON parsed: {data}")
+
+    try:
+        change = data.get("entry",[{}])[0].get("changes",[{}])[0]
+        value  = change.get("value", {})
+
+        if "messages" in value:
+            msg    = value["messages"][0]
+            sender = msg["from"]
+            text   = (msg.get("text") or {}).get("body","").strip()
+            # ... tu lógica ...
+        elif "statuses" in value:
+            app.logger.info(f"Status update: {value.get('statuses',[{}])[0].get('status')}")
+        else:
+            app.logger.info(f"Evento no soportado: {list(value.keys())}")
+    except Exception:
+        app.logger.exception("Error procesando webhook")
+
+    return "ok", 200
+
+    '''data = request.get_json()
     try:
         logger.info("Webhook received")
         logger.debug(f"Raw payload: {data}")
-        '''message = data["messages"][0]
+        message = data["messages"][0]
         phone = message["from"]  # número del cliente
         logger.info(f"Mensaje de: {phone}")
         
@@ -82,11 +111,12 @@ def receive_message():
             enviar_mensaje(
                 phone,
                 "👋 Hola! Escribí *1* o *promo* para consultar tu promoción disponible.\nEscribí *2* o *asesor* para hablar con un asesor."
-            )'''
+            )
 
     except Exception:
         logger.exception("Error procesando webhook")
     return "ok", 200
+    '''
 
 
 def buscar_promo(phone):
