@@ -135,12 +135,12 @@ def enviar_mensaje(to, text):
     }
     r = requests.post(url, headers=headers, json=data)
     logger.info(f"WhatsApp API respuesta: {r.status_code}")
-    logger.debug(f"WhatsApp API body: {r.text}")
+    logger.info(f"WhatsApp API body: {r.text}")
 
 
 def derivar_a_asesor(cliente_phone, promo_text=None):
     if not ADVISOR_PHONE:
-        logger.warning("ADVISOR_PHONE no configurado; no se puede derivar al asesor.")
+        logger.info("ADVISOR_PHONE no configurado; no se puede derivar al asesor.")
         return
     aviso = (
         f"🔔 Nuevo cliente solicita asesoramiento\n"
