@@ -28,13 +28,8 @@ def health():
 @app.get("/test-send")
 def test_send():
     to = request.args.get("to")
-    r = requests.post(
-        f"https://graph.facebook.com/v19.0/{WHATSAPP_PHONE_ID}/messages",
-        headers={"Authorization": f"Bearer {WHATSAPP_TOKEN}",
-                 "Content-Type": "application/json"},
-        json={"messaging_product":"whatsapp","to":to,"type":"text",
-              "text":{"body":"Test OK (backend)"}})
-    return {"code": r.status_code, "resp": r.json()}, r.status_code
+    enviar_mensaje(to, "Test OK (backend)")
+    return {"code": 200, "resp": "sent"}, 200
 
 
 @app.route("/webhook", methods=["GET"])
@@ -86,6 +81,15 @@ def buscar_promo(phone):
 
 
 def enviar_mensaje(to, text):
+    # Normalizar formato: si viene como 54911xxxxxxxx, enviar como 541115xxxxxxxx
+    try:
+        to_str = str(to)
+        if to_str.startswith("54911") and len(to_str) > 5:
+            to_norm = "541115" + to_str[5:]
+        else:
+            to_norm = to_str
+    except Exception:
+        to_norm = to
     url = f"https://graph.facebook.com/v19.0/{WHATSAPP_PHONE_ID}/messages"
     headers = {
         "Authorization": f"Bearer {WHATSAPP_TOKEN}",
@@ -93,7 +97,7 @@ def enviar_mensaje(to, text):
     }
     data = {
         "messaging_product": "whatsapp",
-        "to": to,
+        "to": to_norm,
         "type": "text",
         "text": {"body": text}
     }
